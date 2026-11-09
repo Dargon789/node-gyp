@@ -1,5 +1,77 @@
 # Changelog
 
+## [0.22.4](https://github.com/nodejs/gyp-next/compare/v0.22.3...v0.22.4) (2026-10-20)
+
+
+### Bug Fixes
+
+* avoid deprecated os.path.commonprefix() in RelativePath ([#365](https://github.com/nodejs/gyp-next/issues/365)) ([428343e](https://github.com/nodejs/gyp-next/commit/428343ee58c05e7b817d3603688fe7cdb7a10846)), closes [#364](https://github.com/nodejs/gyp-next/issues/364)
+* build precompiled headers after generated inputs ([#360](https://github.com/nodejs/gyp-next/issues/360)) ([d8888e9](https://github.com/nodejs/gyp-next/commit/d8888e932040eae90604b77ec6030a25714f0077))
+* include the prefix header itself in assembly sources ([#360](https://github.com/nodejs/gyp-next/issues/360)) ([d8888e9](https://github.com/nodejs/gyp-next/commit/d8888e932040eae90604b77ec6030a25714f0077))
+* **make:** compile the C prefix header with CFLAGS ([#360](https://github.com/nodejs/gyp-next/issues/360)) ([d8888e9](https://github.com/nodejs/gyp-next/commit/d8888e932040eae90604b77ec6030a25714f0077))
+
+## [0.22.3](https://github.com/nodejs/gyp-next/compare/v0.22.2...v0.22.3) (2026-09-29)
+
+
+### Bug Fixes
+
+* add Python 3.15 beta to the testing ([#344](https://github.com/nodejs/gyp-next/issues/344)) ([bb6522f](https://github.com/nodejs/gyp-next/commit/bb6522fbacc620da2cc382484d75c75ee35d780c))
+* **ci:** add zizmor security linter for github actions ([#358](https://github.com/nodejs/gyp-next/issues/358)) ([3d4c42b](https://github.com/nodejs/gyp-next/commit/3d4c42b386582df54368c29fcd7c3121737451a2))
+* **ci:** enable Python 3.15 release candidate on Windows ([#357](https://github.com/nodejs/gyp-next/issues/357)) ([e2080d2](https://github.com/nodejs/gyp-next/commit/e2080d25c31a0c1f08178a52802be7fd56848376))
+* **ci:** test on npm@12 ([#359](https://github.com/nodejs/gyp-next/issues/359)) ([1729f6e](https://github.com/nodejs/gyp-next/commit/1729f6e3bf8071d95cda85129cdf4ebab0a877ef))
+* **ci:** update ruff github aactio to v4.0.0 ([#348](https://github.com/nodejs/gyp-next/issues/348)) ([8d213cd](https://github.com/nodejs/gyp-next/commit/8d213cd35cec96e91dc98359ccd247404f71f27b))
+* **cmake:** add a dummy source to libraries without sources ([#362](https://github.com/nodejs/gyp-next/issues/362)) ([391165e](https://github.com/nodejs/gyp-next/commit/391165e76f682a318216b8b5c6ca1de0ef5f8f24))
+* **cmake:** require CMake 3.10 and quote custom command comments ([#361](https://github.com/nodejs/gyp-next/issues/361)) ([b418211](https://github.com/nodejs/gyp-next/commit/b418211c49705c0fb42177b666c140cf96d0149f))
+* write pch cflags as a list instead of a map object ([#355](https://github.com/nodejs/gyp-next/issues/355)) ([fe8188c](https://github.com/nodejs/gyp-next/commit/fe8188c6af0cf53488960b0ec655b1dcc01a7c94))
+
+## [0.22.2](https://github.com/nodejs/gyp-next/compare/v0.22.1...v0.22.2) (2026-04-22)
+
+
+### Bug Fixes
+
+* **build:** Use SPDX license expression ([#310](https://github.com/nodejs/gyp-next/issues/310)) ([ce0da4a](https://github.com/nodejs/gyp-next/commit/ce0da4a6dc1068b73e55e6a58a236bf69f2fed4d))
+
+## [0.22.1](https://github.com/nodejs/gyp-next/compare/v0.22.0...v0.22.1) (2026-04-21)
+
+
+### Bug Fixes
+
+* use floor division when escaping command-line arguments ([#338](https://github.com/nodejs/gyp-next/issues/338)) ([cadca24](https://github.com/nodejs/gyp-next/commit/cadca2416dc13e117e035ad6dd2b471a86d0430f))
+
+## [0.22.0](https://github.com/nodejs/gyp-next/compare/v0.21.1...v0.22.0) (2026-04-02)
+
+
+### Features
+
+* Windows ARM64 target architecture support ([#331](https://github.com/nodejs/gyp-next/issues/331)) ([652a346](https://github.com/nodejs/gyp-next/commit/652a346bbd3b077a4b08a3c37d48100ce200758a))
+
+
+### Bug Fixes
+
+* drop deprecated Python module pkg_resources ([#333](https://github.com/nodejs/gyp-next/issues/333)) ([5b180d5](https://github.com/nodejs/gyp-next/commit/5b180d52d03aff062bdea1ad0209b82271c7eb4a))
+
+## [0.21.1](https://github.com/nodejs/gyp-next/compare/v0.21.0...v0.21.1) (2026-01-24)
+
+
+### Bug Fixes
+
+* replace weak hash functions with SHA-256 ([#329](https://github.com/nodejs/gyp-next/issues/329)) ([958029e](https://github.com/nodejs/gyp-next/commit/958029e6e4969a871d15e78cd083bb102bebb381))
+
+## [0.21.0](https://github.com/nodejs/gyp-next/compare/v0.20.5...v0.21.0) (2025-11-04)
+
+
+### Features
+
+* add support for Visual Studio 2026 ([#319](https://github.com/nodejs/gyp-next/issues/319)) ([cb13bbc](https://github.com/nodejs/gyp-next/commit/cb13bbc4ab7a7d86b51221b39ebee4281e1d3e19))
+
+## [0.20.5](https://github.com/nodejs/gyp-next/compare/v0.20.4...v0.20.5) (2025-10-13)
+
+
+### Bug Fixes
+
+* Fix ruff v0.13.0 adds ruff rule RUF059 ([bd4491a](https://github.com/nodejs/gyp-next/commit/bd4491a3ba641eeb040b785bbce367f72c3baf19))
+* handle `None` case in xcode_emulation regexes ([#311](https://github.com/nodejs/gyp-next/issues/311)) ([b21ee31](https://github.com/nodejs/gyp-next/commit/b21ee3150eea9fc1a8811e910e5ba64f42e1fb77))
+
 ## [0.20.4](https://github.com/nodejs/gyp-next/compare/v0.20.3...v0.20.4) (2025-08-25)
 
 

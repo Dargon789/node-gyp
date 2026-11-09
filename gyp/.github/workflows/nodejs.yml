@@ -3,36 +3,40 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-
+permissions: {}
 jobs:
   nodejs-integration:
     strategy:
       fail-fast: false
       matrix:
         os: [macos-latest, ubuntu-latest, windows-latest]
-        python: ["3.9", "3.11", "3.13"]
+        python-version: ["3.11", "3.13", "3.15"]
         include:
-          - os: macos-13  # macOS on Intel
-            python-version: "3.13"
+          - os: macos-26-intel  # macOS on Intel
+            python-version: 3.x
           - os: ubuntu-24.04-arm  # Ubuntu on ARM
-            python-version: "3.13"
+            python-version: 3.x
           - os: windows-11-arm  # Windows on ARM
-            python-version: "3.13"
+            python-version: 3.x
+          - os: windows-2025-vs2026  # Windows with Visual Studio 2026
+            python-version: 3.x
 
     runs-on: ${{ matrix.os }}
     steps:
       - name: Clone gyp-next
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: gyp-next
+          persist-credentials: false
       - name: Clone nodejs/node
-        uses: actions/checkout@v5
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: nodejs/node
           path: node
-      - uses: actions/setup-python@v5
+          persist-credentials: false
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
         with:
-          python-version: ${{ matrix.python }}
+          python-version: ${{ matrix.python-version }}
           allow-prereleases: true
       - name: Replace gyp in Node.js
         shell: bash
@@ -52,7 +56,7 @@ jobs:
         if: runner.os == 'Windows'
         run: choco install nasm
       - name: Run configure
-        if: runner.os == 'Windows'
+        if: runner.os == 'Windows' && matrix.python-version != '3.15'
         run: |
           cd node
           ./vcbuild.bat nobuild

@@ -11,7 +11,7 @@
     "bindings",
     "gyp"
   ],
-  "version": "11.4.2",
+  "version": "13.1.0",
   "installVersion": 11,
   "author": "Nathan Rajlich <nathan@tootallnate.net> (http://tootallnate.net)",
   "repository": {
@@ -25,28 +25,30 @@
     "env-paths": "^2.2.0",
     "exponential-backoff": "^3.1.1",
     "graceful-fs": "^4.2.6",
-    "make-fetch-happen": "^14.0.3",
-    "nopt": "^8.0.0",
-    "proc-log": "^5.0.0",
+    "nopt": "^10.0.0",
+    "proc-log": "^7.0.0",
     "semver": "^7.3.5",
-    "tar": "^7.4.3",
+    "tar": "^7.5.7",
     "tinyglobby": "^0.2.12",
-    "which": "^5.0.0"
+    "undici": "^8.4.1",
+    "which": "^7.0.0"
   },
   "engines": {
-    "node": "^18.17.0 || >=20.5.0"
+    "node": "^22.22.2 || ^24.15.0 || >=26.0.0"
   },
   "devDependencies": {
+    "@commitlint/cli": "^21.0.2",
+    "@commitlint/config-conventional": "^21.0.2",
     "bindings": "^1.5.0",
-    "cross-env": "^7.0.3",
-    "eslint": "^9.16.0",
-    "mocha": "^11.0.1",
-    "nan": "^2.14.2",
-    "neostandard": "^0.11.9",
+    "cross-env": "^10.1.0",
+    "eslint": "^10.11.0",
+    "mocha": "^12.0.3",
+    "nan": "^2.23.1",
+    "neostandard": "^0.14.0-next.1",
     "require-inject": "^1.4.4"
   },
   "scripts": {
     "lint": "eslint \"*/*.js\" \"test/**/*.js\" \".github/**/*.js\"",
-    "test": "cross-env NODE_GYP_NULL_LOGGER=true mocha --timeout 15000 test/test-download.js test/test-*"
+    "test": "cross-env NODE_GYP_NULL_LOGGER=true mocha --timeout 30000 test/test-download.js test/test-*"
   }
 }

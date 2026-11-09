@@ -1429,7 +1429,10 @@ class MacPrefixHeader:
         return h
 
     def GetInclude(self, lang, arch=None):
-        """Gets the cflags to include the prefix header for language |lang|."""
+        """Gets the cflags to include the prefix header for language |lang|.
+
+        There is no compiled header for assembly ('asm'), which includes the
+        prefix header itself."""
         if self.compile_headers and lang in self.compiled_headers:
             return "-include %s" % self._CompiledHeader(lang, arch)
         elif self.header:
@@ -1534,18 +1537,20 @@ def CLTVersion():
     FROM_XCODE_PKG_ID = "com.apple.pkg.DeveloperToolsCLI"
     MAVERICKS_PKG_ID = "com.apple.pkg.CLTools_Executables"
 
-    regex = re.compile("version: (?P<version>.+)")
+    regex = re.compile(r"version: (?P<version>.+)")
     for key in [MAVERICKS_PKG_ID, STANDALONE_PKG_ID, FROM_XCODE_PKG_ID]:
         try:
             output = GetStdout(["/usr/sbin/pkgutil", "--pkg-info", key])
-            return re.search(regex, output).groupdict()["version"]
+            if m := re.search(regex, output):
+                return m.groupdict()["version"]
         except (GypError, OSError):
             continue
 
     regex = re.compile(r"Command Line Tools for Xcode\s+(?P<version>\S+)")
     try:
         output = GetStdout(["/usr/sbin/softwareupdate", "--history"])
-        return re.search(regex, output).groupdict()["version"]
+        if m := re.search(regex, output):
+            return m.groupdict()["version"]
     except (GypError, OSError):
         return None
 

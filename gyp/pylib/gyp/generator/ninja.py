@@ -246,7 +246,7 @@ class NinjaWriter:
         if flavor == "win":
             # See docstring of msvs_emulation.GenerateEnvironmentFiles().
             self.win_env = {}
-            for arch in ("x86", "x64"):
+            for arch in ("x86", "x64", "arm64"):
                 self.win_env[arch] = "environment." + arch
 
         # Relative path from build output dir to base dir.
@@ -809,9 +809,8 @@ class NinjaWriter:
                 outputs = [self.GypPathToNinja(o, env) for o in outputs]
                 if self.flavor == "win":
                     # WriteNewNinjaRule uses unique_name to create a rsp file on win.
-                    extra_bindings.append(
-                        ("unique_name", hashlib.md5(outputs[0]).hexdigest())
-                    )
+                    unique_name = hashlib.sha256(outputs[0].encode("utf-8")).hexdigest()
+                    extra_bindings.append(("unique_name", unique_name))
 
                 self.ninja.build(
                     outputs,
@@ -1254,6 +1253,12 @@ class NinjaWriter:
                     cflags_cc,
                     self.ExpandSpecial,
                 )
+            elif ext in ("s", "S") and precompiled_header.compile_headers:
+                # Assembly gets $cflags_pch_c too, but without a gch for it, the
+                # -include of the C one fails.
+                variables = [
+                    ("cflags_pch_c", precompiled_header.GetInclude("asm", arch))
+                ]
             ninja_file.build(
                 output,
                 command,
@@ -1275,13 +1280,17 @@ class NinjaWriter:
                 ],
             )
 
-        self.WritePchTargets(ninja_file, pch_commands)
+        self.WritePchTargets(ninja_file, pch_commands, predepends)
 
         ninja_file.newline()
         return outputs
 
-    def WritePchTargets(self, ninja_file, pch_commands):
-        """Writes ninja rules to compile prefix headers."""
+    def WritePchTargets(self, ninja_file, pch_commands, predepends):
+        """Writes ninja rules to compile prefix headers.
+
+        A prefix header may include generated headers, so like the object files,
+        the gch files are built after |predepends|.
+        """
         if not pch_commands:
             return
 
@@ -1300,7 +1309,13 @@ class NinjaWriter:
                 "mm": "objcxx",
             }
             cmd = map.get(lang)
-            ninja_file.build(gch, cmd, input, variables=[(var_name, lang_flag)])
+            ninja_file.build(
+                gch,
+                cmd,
+                input,
+                order_only=predepends,
+                variables=[(var_name, lang_flag)],
+            )
 
     def WriteLink(self, spec, config_name, config, link_deps, compile_deps):
         """Write out a link step. Fills out target.binary."""
@@ -2340,6 +2355,7 @@ def GenerateOutputForConfig(target_list, target_dicts, data, params, config_name
         master_ninja.variable("rc", "rc.exe")
         master_ninja.variable("ml_x86", "ml.exe")
         master_ninja.variable("ml_x64", "ml64.exe")
+        master_ninja.variable("ml_arm64", "armasm64.exe")
         master_ninja.variable("mt", "mt.exe")
     else:
         master_ninja.variable("ld", CommandWithWrapper("LINK", wrappers, ld))
@@ -2803,7 +2819,7 @@ def GenerateOutputForConfig(target_list, target_dicts, data, params, config_name
             build_file, name, toolset
         )
         qualified_target_for_hash = qualified_target_for_hash.encode("utf-8")
-        hash_for_rules = hashlib.md5(qualified_target_for_hash).hexdigest()
+        hash_for_rules = hashlib.sha256(qualified_target_for_hash).hexdigest()
 
         base_path = os.path.dirname(build_file)
         obj = "obj"

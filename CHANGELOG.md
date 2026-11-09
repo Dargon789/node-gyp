@@ -1,5 +1,236 @@
 # Changelog
 
+## [13.1.0](https://github.com/nodejs/node-gyp/compare/v13.0.2...v13.1.0) (2026-10-02)
+
+
+### Features
+
+* update gyp-next to v0.22.3 ([#3361](https://github.com/nodejs/node-gyp/issues/3361)) ([729bfb8](https://github.com/nodejs/node-gyp/commit/729bfb8372e9bfe222d9e26d16cfddf3dcb5926b))
+
+
+### Bug Fixes
+
+* accept --msvs_version as the README documents it ([#3364](https://github.com/nodejs/node-gyp/issues/3364)) ([8cca9c9](https://github.com/nodejs/node-gyp/commit/8cca9c9ff1b8a292734fc82c2ae35ba17e20a5ff))
+* add Python 3.15 and update OS versions in tests.yml ([#3369](https://github.com/nodejs/node-gyp/issues/3369)) ([03c7b3b](https://github.com/nodejs/node-gyp/commit/03c7b3b69f15f57a491baf0c406e7e8b9d63b463))
+* let --loglevel on the command line override npm_config_loglevel ([#3384](https://github.com/nodejs/node-gyp/issues/3384)) ([2275aa9](https://github.com/nodejs/node-gyp/commit/2275aa95e2d7e0c4739219ddaad51e0ce0f7f75a))
+
+
+### Core
+
+* **deps-dev:** bump eslint to 10 and neostandard to 0.14.0-next.1 ([#3374](https://github.com/nodejs/node-gyp/issues/3374)) ([d389298](https://github.com/nodejs/node-gyp/commit/d38929823a9a2f83422386d8d127a036d00b007a))
+
+
+### Tests
+
+* fix missing cb in fs.unlink ([#3368](https://github.com/nodejs/node-gyp/issues/3368)) ([e91cd76](https://github.com/nodejs/node-gyp/commit/e91cd76a28b38650fdb4e7a3dd28e53b6f2c464f))
+* fix non-ASCII addon cache path ([#3370](https://github.com/nodejs/node-gyp/issues/3370)) ([e6f699f](https://github.com/nodejs/node-gyp/commit/e6f699f1ed4bf846a5d8275564591cbaf86f75ec))
+
+
+### Doc
+
+* use Visual Studio 2026 in Windows setup instructions ([#3367](https://github.com/nodejs/node-gyp/issues/3367)) ([20bd442](https://github.com/nodejs/node-gyp/commit/20bd442a04627621248fe6b5aa97cd5e88d7f058))
+
+
+### Miscellaneous
+
+* **deps:** upgrade tar to 7.5.7 to address CVE-2026-24842 ([#3375](https://github.com/nodejs/node-gyp/issues/3375)) ([79048c9](https://github.com/nodejs/node-gyp/commit/79048c9131471b91829d1aa3c9719c951f23eb03))
+* use Visual Studio 2026 on windows-11-arm ([#3380](https://github.com/nodejs/node-gyp/issues/3380)) ([6feed93](https://github.com/nodejs/node-gyp/commit/6feed93e972182109cd5bda658c1b395b6ad45d4))
+
+## [13.0.2](https://github.com/nodejs/node-gyp/compare/v13.0.1...v13.0.2) (2026-08-25)
+
+
+### Bug Fixes
+
+* **ci:** add zizmor security linter for github actions ([#3358](https://github.com/nodejs/node-gyp/issues/3358)) ([8466166](https://github.com/nodejs/node-gyp/commit/84661663e70b81321bcb590d18641e3eefdfdb81))
+* **ci:** do not ruff format gyp example code in markdown ([#3357](https://github.com/nodejs/node-gyp/issues/3357)) ([4a74fbe](https://github.com/nodejs/node-gyp/commit/4a74fbeb481da6304bdd2ba0fc46c76a642e2aa7))
+* fall back gracefully when build symlink creation fails ([#3339](https://github.com/nodejs/node-gyp/issues/3339)) ([eae161f](https://github.com/nodejs/node-gyp/commit/eae161fe74df16544eead9591673d2d3bf0a4b4f))
+
+
+### Core
+
+* **deps:** bump actions/checkout from 6 to 7 ([#3335](https://github.com/nodejs/node-gyp/issues/3335)) ([353050b](https://github.com/nodejs/node-gyp/commit/353050b2fe664e5c6379d32368deab04d2b37021))
+* **deps:** bump actions/setup-node from 6 to 7 ([#3348](https://github.com/nodejs/node-gyp/issues/3348)) ([005a7c5](https://github.com/nodejs/node-gyp/commit/005a7c593a2421dd5dc1db45bbec77a037361044))
+* **deps:** bump actions/setup-python from 6 to 7 ([#3349](https://github.com/nodejs/node-gyp/issues/3349)) ([42367da](https://github.com/nodejs/node-gyp/commit/42367da5a2683115ff538b92caed5c32c322005f))
+* **deps:** bump astral-sh/ruff-action from 4.0.0 to 4.1.0 ([#3342](https://github.com/nodejs/node-gyp/issues/3342)) ([ef586e1](https://github.com/nodejs/node-gyp/commit/ef586e1304b6b05b24ab696b2e849f0c075c3be5))
+
+
+### Tests
+
+* fix undici 8.7.0 compatibility ([#3345](https://github.com/nodejs/node-gyp/issues/3345)) ([a2f8b6a](https://github.com/nodejs/node-gyp/commit/a2f8b6ac88dd8338f14f06ec8351a07028b0a979))
+* log MSBuild output on Windows build failures ([#3328](https://github.com/nodejs/node-gyp/issues/3328)) ([3c38cec](https://github.com/nodejs/node-gyp/commit/3c38cecc770a987ce8ccddbfdfd3a3b646750ee8))
+
+## [13.0.1](https://github.com/nodejs/node-gyp/compare/v13.0.0...v13.0.1) (2026-07-02)
+
+
+### Core
+
+* **deps:** bump undici from 6.26.0 to 8.4.1 ([#3330](https://github.com/nodejs/node-gyp/issues/3330)) ([2c95a19](https://github.com/nodejs/node-gyp/commit/2c95a19f54bedf76209e795b146ab44e6fc3f359))
+
+
+### Miscellaneous
+
+* fix windows vs2026 version ([#3338](https://github.com/nodejs/node-gyp/issues/3338)) ([5a835ea](https://github.com/nodejs/node-gyp/commit/5a835eaae4d8b08189debbd2f20e078e7a661b3d))
+
+## [13.0.0](https://github.com/nodejs/node-gyp/compare/v12.4.0...v13.0.0) (2026-06-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* `node-gyp` now supports node `^22.22.2 || ^24.15.0 || >=26.0.0`
+
+### Features
+
+* bump to new node engine range ([b792b8e](https://github.com/nodejs/node-gyp/commit/b792b8e321e6e56d46c32f4b9adb15e4085c3797))
+
+
+### Bug Fixes
+
+* **ci:** update ruff-action version to v4.0.0 ([#3324](https://github.com/nodejs/node-gyp/issues/3324)) ([f089669](https://github.com/nodejs/node-gyp/commit/f089669a4c95a3c8b7f435556b226fa66dcd94b7))
+* disable LTO for addon builds on Windows ([#3331](https://github.com/nodejs/node-gyp/issues/3331)) ([d30bb6e](https://github.com/nodejs/node-gyp/commit/d30bb6e6fdaf46374de9b9bfe1bf54f49337b052))
+
+
+### Core
+
+* **deps:** bump actions/github-script from 8 to 9 ([#3297](https://github.com/nodejs/node-gyp/issues/3297)) ([f6a5e45](https://github.com/nodejs/node-gyp/commit/f6a5e458e819f05ddfbba5cbd5589a7a1c80128e))
+* **deps:** bump googleapis/release-please-action from 4 to 5 ([#3307](https://github.com/nodejs/node-gyp/issues/3307)) ([b2cde80](https://github.com/nodejs/node-gyp/commit/b2cde802487f3b9efd726a1a1cb43650731f9958))
+* nopt@10.0.0 ([327424a](https://github.com/nodejs/node-gyp/commit/327424ad630dd7007771b19f7b77691b2156a556))
+* proc-log@7.0.0 ([f6c296b](https://github.com/nodejs/node-gyp/commit/f6c296b2952e23b7e690b7148c9dc32b25a26ee2))
+* which@7.0.0 ([11a8b10](https://github.com/nodejs/node-gyp/commit/11a8b109f805f13129302508c219607167a8e9ea))
+
+
+### Miscellaneous
+
+* add commit-lint ([#3325](https://github.com/nodejs/node-gyp/issues/3325)) ([6fb6c11](https://github.com/nodejs/node-gyp/commit/6fb6c11eae1258eddd478956a20f0cb154dd4553))
+
+## [12.4.0](https://github.com/nodejs/node-gyp/compare/v12.3.0...v12.4.0) (2026-05-15)
+
+
+### Features
+
+* update gyp-next to v0.22.2 ([#3316](https://github.com/nodejs/node-gyp/issues/3316)) ([8ea71e5](https://github.com/nodejs/node-gyp/commit/8ea71e5a0d5577f8f780df7597fa1f94089e1be4))
+
+
+### Bug Fixes
+
+* retry downloads on retryable errors ([#3308](https://github.com/nodejs/node-gyp/issues/3308)) ([0793489](https://github.com/nodejs/node-gyp/commit/0793489b961c2cbf6c6b2182d968d0c262c3b573))
+* stop testing end-of-life Node.js v20 ([#3315](https://github.com/nodejs/node-gyp/issues/3315)) ([5c0ec47](https://github.com/nodejs/node-gyp/commit/5c0ec47797a18d3e65f0c4c83e5812289191cfe1))
+* test on Node.js v26 ([#3314](https://github.com/nodejs/node-gyp/issues/3314)) ([0e65639](https://github.com/nodejs/node-gyp/commit/0e65639baa8b64b5fecec3820a4f07dc7c4a42ad))
+
+
+### Miscellaneous
+
+* add workflow_dispatch trigger to tests workflow ([#3299](https://github.com/nodejs/node-gyp/issues/3299)) ([b2fcdcd](https://github.com/nodejs/node-gyp/commit/b2fcdcdd6aebdf0ab6d7d296fcabccf188883e01))
+
+## [12.3.0](https://github.com/nodejs/node-gyp/compare/v12.2.0...v12.3.0) (2026-04-21)
+
+
+### Features
+
+* replace make-fetch-happen with built-in fetch ([#3302](https://github.com/nodejs/node-gyp/issues/3302)) ([393ec2b](https://github.com/nodejs/node-gyp/commit/393ec2be480195b585768eb18ac2d92b858b12db))
+* update gyp-next to v0.22.1 ([#3295](https://github.com/nodejs/node-gyp/issues/3295)) ([f4242fb](https://github.com/nodejs/node-gyp/commit/f4242fb7bf7592d71848bae5c7f8597f2718dc3f))
+
+
+### Bug Fixes
+
+* Switch to URL instead of url.resolve ([#3256](https://github.com/nodejs/node-gyp/issues/3256)) ([#3263](https://github.com/nodejs/node-gyp/issues/3263)) ([46d7576](https://github.com/nodejs/node-gyp/commit/46d75768018d10dc4b5693b35cf58f502425cbbe))
+
+
+### Core
+
+* **deps-dev:** bump neostandard from 0.12.2 to 0.13.0 ([#3289](https://github.com/nodejs/node-gyp/issues/3289)) ([19da158](https://github.com/nodejs/node-gyp/commit/19da1583b3876dce8c97263b168d9dfef637b76b))
+* improve Add-Type with -IgnoreWarnings ([#3280](https://github.com/nodejs/node-gyp/issues/3280)) ([1381458](https://github.com/nodejs/node-gyp/commit/13814583a476c85a84d5ac902c7ffa310120cb88))
+
+## [12.2.0](https://github.com/nodejs/node-gyp/compare/v12.1.0...v12.2.0) (2026-01-26)
+
+
+### Features
+
+* include built package version in error logs ([#3254](https://github.com/nodejs/node-gyp/issues/3254)) ([ee9cbdd](https://github.com/nodejs/node-gyp/commit/ee9cbdd6e1d40dc7c1cdc5ed6a75432c716eaf3f))
+* update gyp-next to v0.21.1 ([#3273](https://github.com/nodejs/node-gyp/issues/3273)) ([888ff2c](https://github.com/nodejs/node-gyp/commit/888ff2c48a4cf5602013b96b52c6670906976f63))
+
+
+### Bug Fixes
+
+* cpu concurrency detection on some platforms ([#3255](https://github.com/nodejs/node-gyp/issues/3255)) ([f15b79a](https://github.com/nodejs/node-gyp/commit/f15b79a03c54cea0f66d940a0d6d839df867a319)), closes [#3191](https://github.com/nodejs/node-gyp/issues/3191)
+* python is no longer a valid npm config setting ([#3258](https://github.com/nodejs/node-gyp/issues/3258)) ([c7c678f](https://github.com/nodejs/node-gyp/commit/c7c678f89837d956194f326b01c5a8eb1d745db3))
+* Switch to URL instead of url.parse ([#3256](https://github.com/nodejs/node-gyp/issues/3256)) ([3f81949](https://github.com/nodejs/node-gyp/commit/3f819499d8ce6d46c646466de7b9492bf7bde663))
+* Test Windows on Python 3.14, not 3.13 ([#3262](https://github.com/nodejs/node-gyp/issues/3262)) ([7b4f315](https://github.com/nodejs/node-gyp/commit/7b4f315e4dad880c841d21df641d6dd9b68bf36b))
+
+
+### Core
+
+* **deps:** bump actions/checkout from 5 to 6 ([#3248](https://github.com/nodejs/node-gyp/issues/3248)) ([db5385c](https://github.com/nodejs/node-gyp/commit/db5385c5467e5bfb914b9954f0313c46f1f4e10d))
+
+
+### Doc
+
+* add a note about changes in gyp folder ([#3259](https://github.com/nodejs/node-gyp/issues/3259)) ([a52bc81](https://github.com/nodejs/node-gyp/commit/a52bc819f44b881854ff798865ad416430e3dce2))
+* correct typos ([#3269](https://github.com/nodejs/node-gyp/issues/3269)) ([0f2bc7d](https://github.com/nodejs/node-gyp/commit/0f2bc7d2e0665b1c7bb03e1cd8653ea330277a70))
+* remove obsolete Microsoft Node.js Guidelines link ([#3268](https://github.com/nodejs/node-gyp/issues/3268)) ([30cda26](https://github.com/nodejs/node-gyp/commit/30cda268730798dc0f67182c8c568d8b8069964e))
+* update Python manual install instructions for Windows ([#3265](https://github.com/nodejs/node-gyp/issues/3265)) ([0407877](https://github.com/nodejs/node-gyp/commit/0407877e3e26d3201f74cf1a9deabbbfc40bdbb7))
+
+
+### Miscellaneous
+
+* **deps:** upgrade tar to 7.5.4 to address CVE-2026-23950 ([#3271](https://github.com/nodejs/node-gyp/issues/3271)) ([7bf371c](https://github.com/nodejs/node-gyp/commit/7bf371c4dd7c694232ab3169d02fe8197e1ecc6d))
+
+## [12.1.0](https://github.com/nodejs/node-gyp/compare/v12.0.0...v12.1.0) (2025-11-12)
+
+
+### Features
+
+* Add support for Visual Studio 2026 (18.x) ([69e5fd2](https://github.com/nodejs/node-gyp/commit/69e5fd2c98ac83dad5200a47515b301ccd80d2d3))
+* Support for Visual Studio 2026 (18.x) ([69e5fd2](https://github.com/nodejs/node-gyp/commit/69e5fd2c98ac83dad5200a47515b301ccd80d2d3))
+
+## [12.0.0](https://github.com/nodejs/node-gyp/compare/v11.5.0...v12.0.0) (2025-11-10)
+
+
+### ⚠ BREAKING CHANGES
+
+* align to npm 11 node engine range
+
+### Features
+
+* align to npm 11 node engine range ([2f85686](https://github.com/nodejs/node-gyp/commit/2f85686bbe745673350a8f9dbb0e86ee0190f213))
+* update gyp-next to v0.21.0 ([c57cd2e](https://github.com/nodejs/node-gyp/commit/c57cd2e86dc57707475b9f7e676e189f064817de))
+
+
+### Core
+
+* **deps:** bump actions/setup-node from 5 to 6 ([ae90e63](https://github.com/nodejs/node-gyp/commit/ae90e632d9fab85f4cd902dc9205ba9dfafaf3bc))
+* **deps:** bump env-paths from 2.2.1 to 3.0.0 ([#3235](https://github.com/nodejs/node-gyp/issues/3235)) ([5fffb2f](https://github.com/nodejs/node-gyp/commit/5fffb2ffee304cc898fdea7a0cd9e41d54c53839))
+* **deps:** bump which from 5.0.0 to 6.0.0 ([#3238](https://github.com/nodejs/node-gyp/issues/3238)) ([eaa8e34](https://github.com/nodejs/node-gyp/commit/eaa8e34cb5a0710bef0602c42e5840b47eb76822))
+* make-fetch-happen@15.0.0 ([e2b9d21](https://github.com/nodejs/node-gyp/commit/e2b9d21bce27c35d18fcb6f8583e386d15ce395c))
+* nopt@9.0.0 ([9bdeaf3](https://github.com/nodejs/node-gyp/commit/9bdeaf307cd7a254946859d306465989fa39dfb2))
+* proc-log@6.0.0 ([dfc68df](https://github.com/nodejs/node-gyp/commit/dfc68dfba3c17deb0bda9a395bb49d8fb9fa5951))
+
+
+### Miscellaneous
+
+* increase test timeouts ([#3237](https://github.com/nodejs/node-gyp/issues/3237)) ([3b41971](https://github.com/nodejs/node-gyp/commit/3b41971e2f6b90e02b1d7df592d403b8dfc8fa4d))
+* setup dependabot for npm ([86d65c7](https://github.com/nodejs/node-gyp/commit/86d65c7874eb41eb49c9b8bbf342becac8e57c6f))
+* update devDependencies ([41b0cea](https://github.com/nodejs/node-gyp/commit/41b0cea2f12342a790580cc8f844f075d49e096c))
+
+## [11.5.0](https://github.com/nodejs/node-gyp/compare/v11.4.2...v11.5.0) (2025-10-15)
+
+
+### Features
+
+* update gyp-next to v0.20.5 ([#3222](https://github.com/nodejs/node-gyp/issues/3222)) ([848e950](https://github.com/nodejs/node-gyp/commit/848e950833b90f0b25f346710ee42e9be4797604))
+
+
+### Bug Fixes
+
+* **ci:** Run Visual Studio test on Windows 11 on ARM ([#3217](https://github.com/nodejs/node-gyp/issues/3217)) ([8bd3f63](https://github.com/nodejs/node-gyp/commit/8bd3f6354b8bd43262a4d99d58a568beab0459e8))
+* **ci:** Test on Python 3.14 release candidate 3 on Linux and macOS ([#3216](https://github.com/nodejs/node-gyp/issues/3216)) ([085b445](https://github.com/nodejs/node-gyp/commit/085b445d1c00f8f1fc6a6ff80d8a93c6643f11ee))
+
+
+### Core
+
+* **deps:** bump actions/github-script from 7 to 8 ([#3213](https://github.com/nodejs/node-gyp/issues/3213)) ([c6b968c](https://github.com/nodejs/node-gyp/commit/c6b968caf7f4e22687fc10716162675b1411f713))
+* **deps:** bump actions/setup-node from 4 to 5 ([#3211](https://github.com/nodejs/node-gyp/issues/3211)) ([921c04d](https://github.com/nodejs/node-gyp/commit/921c04d142549f172d3aeae4097c9e0af05599dd))
+* **deps:** bump actions/setup-python from 5 to 6 ([#3210](https://github.com/nodejs/node-gyp/issues/3210)) ([6b70b05](https://github.com/nodejs/node-gyp/commit/6b70b05ed21cb977214348c97c2b97515c0d08f3))
+
 ## [11.4.2](https://github.com/nodejs/node-gyp/compare/v11.4.1...v11.4.2) (2025-08-26)
 
 

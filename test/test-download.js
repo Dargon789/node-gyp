@@ -6,6 +6,7 @@ const fs = require('fs/promises')
 const path = require('path')
 const http = require('http')
 const https = require('https')
+const net = require('net')
 const install = require('../lib/install')
 const { download, readCAFile } = require('../lib/download')
 const { FULL_TEST, devDir, platformTimeout } = require('./common')
@@ -69,13 +70,42 @@ describe('download', function () {
   })
 
   it('download over http with proxy', async function () {
-    const server = http.createServer((_, res) => {
+    const server = http.createServer((req, res) => {
+      assert.strictEqual(req.headers['user-agent'], `node-gyp v42 (node ${process.version})`)
       res.end('ok')
     })
 
-    const pserver = http.createServer((req, res) => {
-      assert.strictEqual(req.headers['user-agent'], `node-gyp v42 (node ${process.version})`)
-      res.end('proxy ok')
+    let proxyUsed = false
+    const pserver = http.createServer()
+    // undici tunnels https requests through the proxy with CONNECT, but forwards
+    // plain http requests to the proxy in absolute-form. Handle both so the test
+    // works regardless of which path undici picks.
+    pserver.on('request', (creq, cres) => {
+      proxyUsed = true
+      const target = new URL(creq.url)
+      const proxyReq = http.request({
+        host: target.hostname,
+        port: target.port,
+        path: target.pathname + target.search,
+        method: creq.method,
+        headers: creq.headers
+      }, (proxyRes) => {
+        cres.writeHead(proxyRes.statusCode, proxyRes.headers)
+        proxyRes.pipe(cres)
+      })
+      creq.pipe(proxyReq)
+    })
+    pserver.on('connect', (req, clientSocket, head) => {
+      proxyUsed = true
+      const [targetHost, targetPort] = req.url.split(':')
+      const serverSocket = net.connect(targetPort, targetHost, () => {
+        clientSocket.write('HTTP/1.1 200 Connection Established\r\n\r\n')
+        serverSocket.write(head)
+        serverSocket.pipe(clientSocket)
+        clientSocket.pipe(serverSocket)
+      })
+      clientSocket.on('error', () => serverSocket.destroy())
+      serverSocket.on('error', () => clientSocket.destroy())
     })
 
     after(() => Promise.all([
@@ -96,7 +126,56 @@ describe('download', function () {
     }
     const url = `http://${host}:${port}`
     const res = await download(gyp, url)
-    assert.strictEqual(await res.text(), 'proxy ok')
+    assert.strictEqual(await res.text(), 'ok')
+    assert.strictEqual(proxyUsed, true)
+  })
+
+  it('download over https with proxy and custom ca', async function () {
+    const cafile = path.join(__dirname, 'fixtures/ca-proxy.crt')
+    await fs.writeFile(cafile, certs['ca.crt'], 'utf8')
+
+    const server = https.createServer({
+      ca: await readCAFile(cafile),
+      cert: certs['server.crt'],
+      key: certs['server.key']
+    }, (_, res) => res.end('ok'))
+
+    let proxyUsed = false
+    const pserver = http.createServer()
+    pserver.on('connect', (req, clientSocket, head) => {
+      proxyUsed = true
+      const [targetHost, targetPort] = req.url.split(':')
+      const serverSocket = net.connect(targetPort, targetHost, () => {
+        clientSocket.write('HTTP/1.1 200 Connection Established\r\n\r\n')
+        serverSocket.write(head)
+        serverSocket.pipe(clientSocket)
+        clientSocket.pipe(serverSocket)
+      })
+      clientSocket.on('error', () => serverSocket.destroy())
+      serverSocket.on('error', () => clientSocket.destroy())
+    })
+
+    after(async () => {
+      await new Promise((resolve) => server.close(resolve))
+      await new Promise((resolve) => pserver.close(resolve))
+      await fs.unlink(cafile)
+    })
+
+    const host = 'localhost'
+    await new Promise((resolve) => server.listen(0, host, resolve))
+    const { port } = server.address()
+    await new Promise((resolve) => pserver.listen(port + 1, host, resolve))
+    const gyp = {
+      opts: {
+        cafile,
+        proxy: `http://${host}:${port + 1}`,
+        noproxy: 'bad'
+      },
+      version: '42'
+    }
+    const res = await download(gyp, `https://${host}:${port}`)
+    assert.strictEqual(await res.text(), 'ok')
+    assert.strictEqual(proxyUsed, true)
   })
 
   it('download over http with noproxy', async function () {
@@ -105,8 +184,11 @@ describe('download', function () {
       res.end('ok')
     })
 
-    const pserver = http.createServer((_, res) => {
-      res.end('proxy ok')
+    let proxyUsed = false
+    const pserver = http.createServer()
+    pserver.on('connect', (_, socket) => {
+      proxyUsed = true
+      socket.destroy()
     })
 
     after(() => Promise.all([
@@ -128,6 +210,7 @@ describe('download', function () {
     const url = `http://${host}:${port}`
     const res = await download(gyp, url)
     assert.strictEqual(await res.text(), 'ok')
+    assert.strictEqual(proxyUsed, false)
   })
 
   it('download with missing cafile', async function () {
@@ -151,6 +234,32 @@ describe('download', function () {
     const cas = await readCAFile(path.join(__dirname, 'fixtures/ca-bundle.crt'))
     assert.strictEqual(cas.length, 2)
     assert.notStrictEqual(cas[0], cas[1])
+  })
+
+  it('download will retry on ECONNRESET', async function () {
+    let requestCount = 0
+    const server = http.createServer((req, res) => {
+      requestCount++
+      if (requestCount < 3) {
+        req.socket.destroy()
+        return
+      }
+      res.end('ok')
+    })
+
+    after(() => new Promise((resolve) => server.close(resolve)))
+
+    const host = 'localhost'
+    await new Promise((resolve) => server.listen(0, host, resolve))
+    const { port } = server.address()
+    const gyp = {
+      opts: {},
+      version: '42'
+    }
+    const url = `http://${host}:${port}`
+    const res = await download(gyp, url)
+    assert.strictEqual(await res.text(), 'ok')
+    assert.ok(requestCount >= 2, `expected at least 2 requests but got ${requestCount}`)
   })
 
   // only run this test if we are running a version of Node with predictable version path behavior

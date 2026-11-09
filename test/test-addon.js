@@ -15,11 +15,11 @@ const nodeGyp = path.resolve(__dirname, '..', 'bin', 'node-gyp.js')
 const execFileSync = (...args) => cp.execFileSync(...args).toString().trim()
 
 const execFile = async (cmd) => {
-  const [err,, stderr] = await util.execFile(process.execPath, cmd, {
+  const [err, stdout, stderr] = await util.execFile(process.execPath, cmd, {
     env: { ...process.env, NODE_GYP_NULL_LOGGER: undefined },
     encoding: 'utf-8'
   })
-  return [err, stderr.toString().trim().split(/\r?\n/)]
+  return [err, stdout.toString().trim(), stderr.toString().trim().split(/\r?\n/)]
 }
 
 function runHello (hostProcess = process.execPath) {
@@ -47,7 +47,13 @@ describe('addon', function () {
 
     // Set the loglevel otherwise the output disappears when run via 'npm test'
     const cmd = [nodeGyp, 'rebuild', '-C', addonPath, '--loglevel=verbose']
-    const [err, logLines] = await execFile(cmd)
+    const [err, stdout, logLines] = await execFile(cmd)
+    if (err) {
+      console.log('-- build stdout (MSBuild/make output) --')
+      console.log(stdout)
+      console.log('-- build stderr (gyp logs) --')
+      console.log(logLines.join('\n'))
+    }
     const lastLine = logLines[logLines.length - 1]
     assert.strictEqual(err, null)
     assert.strictEqual(lastLine, 'gyp info ok', 'should end in ok')
@@ -55,6 +61,11 @@ describe('addon', function () {
   })
 
   it('build simple addon in path with non-ascii characters', async function () {
+    // On cp1252 Windows with UTF-8 mode disabled, the fixture cannot print the
+    // U+012B in "Latīna" to its stdout pipe, so this guard skips the test.
+    // Python 3.15 enables UTF-8 mode by default (PEP 686): printing succeeds,
+    // while getdefaultlocale() still reports cp1252, selecting the Latīna case.
+    // Python 3.14 with PYTHONUTF8=1 also exercises this previously skipped path.
     if (!checkCharmapValid()) {
       return this.skip('python console app can\'t encode non-ascii character.')
     }
@@ -81,52 +92,73 @@ describe('addon', function () {
     }
     const config = JSON.parse(data.replace(/#.+\n/, ''))
     const nodeDir = config.variables.nodedir
-    const testNodeDir = path.join(addonPath, testDirName)
-    // Create symbol link to path with non-ascii characters
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'node-gyp-addon-'))
+    const testDevDir = path.join(tempDir, testDirName)
     try {
-      fs.symlinkSync(nodeDir, testNodeDir, 'dir')
-    } catch (err) {
-      switch (err.code) {
-        case 'EEXIST': break
-        case 'EPERM':
-          return assert.fail(err, null, 'Please try to running console as an administrator')
-        default:
-          return assert.fail(err)
+      // The downloaded SDK uses <cache>/<version>/<arch>/node.lib on Windows.
+      // Passing nodeDir via --nodedir instead selects $(Configuration)/node.lib
+      // inside that version directory, e.g. Release/node.lib, which is absent.
+      // --devdir expects the cache root: link nodeDir's parent so node-gyp keeps
+      // the <version>/<arch>/node.lib layout under the non-ASCII path.
+      try {
+        fs.symlinkSync(path.dirname(nodeDir), testDevDir, 'dir')
+      } catch (err) {
+        switch (err.code) {
+          case 'EEXIST': break
+          case 'EPERM':
+            return assert.fail(err, null, 'Please try to running console as an administrator')
+          default:
+            return assert.fail(err)
+        }
       }
-    }
 
-    const cmd = [
-      nodeGyp,
-      'rebuild',
-      '-C',
-      addonPath,
-      '--loglevel=verbose',
-      '-nodedir=' + testNodeDir
-    ]
-    const [err, logLines] = await execFile(cmd)
-    try {
-      fs.unlink(testNodeDir)
-    } catch (err) {
-      assert.fail(err)
+      const cmd = [
+        nodeGyp,
+        'rebuild',
+        '-C',
+        addonPath,
+        '--loglevel=verbose',
+        '--devdir=' + testDevDir
+      ]
+      const [err, stdout, logLines] = await execFile(cmd)
+      if (err) {
+        console.log('-- build stdout (MSBuild/make output) --')
+        console.log(stdout)
+        console.log('-- build stderr (gyp logs) --')
+        console.log(logLines.join('\n'))
+      }
+      const lastLine = logLines[logLines.length - 1]
+      assert.strictEqual(err, null)
+      assert.strictEqual(lastLine, 'gyp info ok', 'should end in ok')
+      assert.strictEqual(runHello(), 'world')
+    } finally {
+      fs.rmSync(tempDir, { recursive: true, force: true })
     }
-    const lastLine = logLines[logLines.length - 1]
-    assert.strictEqual(err, null)
-    assert.strictEqual(lastLine, 'gyp info ok', 'should end in ok')
-    assert.strictEqual(runHello(), 'world')
   })
 
   it('addon works with renamed host executable', async function () {
     this.timeout(platformTimeout(1, { win32: 5 }))
 
-    const notNodePath = path.join(os.tmpdir(), 'notnode' + path.extname(process.execPath))
+    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'node-gyp-notnode-'))
+    const notNodePath = path.join(tempDir, 'notnode' + path.extname(process.execPath))
     fs.copyFileSync(process.execPath, notNodePath)
 
-    const cmd = [nodeGyp, 'rebuild', '-C', addonPath, '--loglevel=verbose']
-    const [err, logLines] = await execFile(cmd)
-    const lastLine = logLines[logLines.length - 1]
-    assert.strictEqual(err, null)
-    assert.strictEqual(lastLine, 'gyp info ok', 'should end in ok')
-    assert.strictEqual(runHello(notNodePath), 'world')
-    fs.unlinkSync(notNodePath)
+    try {
+      const cmd = [nodeGyp, 'rebuild', '-C', addonPath, '--loglevel=verbose']
+      const [err, stdout, logLines] = await execFile(cmd)
+      if (err) {
+        console.log('-- build stdout (MSBuild/make output) --')
+        console.log(stdout)
+        console.log('-- build stderr (gyp logs) --')
+        console.log(logLines.join('\n'))
+      }
+      const lastLine = logLines[logLines.length - 1]
+      assert.strictEqual(err, null)
+      assert.strictEqual(lastLine, 'gyp info ok', 'should end in ok')
+      assert.strictEqual(runHello(notNodePath), 'world')
+    } finally {
+      // Windows may keep the just-exited executable locked briefly (EBUSY)
+      fs.rmSync(tempDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 1000 })
+    }
   })
 })
